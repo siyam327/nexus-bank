@@ -54,39 +54,39 @@ bank.exe
 
 ```text
 c-bank-system/
-├── include/           ← Combined Header Library Filepath (.h)
-│   ├── config.h       ← Global constants, path mappings, operational ceilings
-│   ├── types.h        ← Global data model structures (Accounts, Ledgers, Sessions)
-│   ├── color.h        ← Cross-platform ANSI terminal coloring macros
-│   ├── utils.h        ← Automated entry parsing handles & generation tooling
-│   ├── display.h      ← UI layout formatting tables and visual statement generation
-│   ├── file_io.h      ← System input/output disk persistence streams
-│   ├── auth.h         ← Login sequence execution wrappers & state handles
-│   ├── account.h      ← Core operational client accounting procedures
-│   ├── transaction.h  ← Balance manipulation handlers and history tracking
-│   ├── loan.h         ← Multi-period compound financing calculators
-│   ├── interest.h     ← Local automated checking/savings rate evaluations
-│   └── admin.h        ← Root management control loops
+├── include/             ← Combined Header Library Filepath (.h)
+│   ├── config.h         ← Global constants, path mappings, operational ceilings
+│   ├── types.h          ← Global data model structures (Accounts, Ledgers, Sessions)
+│   ├── color.h          ← Cross-platform ANSI terminal coloring macros
+│   ├── utils.h          ← Automated entry parsing handles & generation tooling
+│   ├── display.h        ← UI layout formatting tables and visual statement generation
+│   ├── file_io.h        ← System input/output disk persistence streams
+│   ├── auth.h           ← Login sequence execution wrappers & state handles
+│   ├── account.h        ← Core operational client accounting procedures
+│   ├── transaction.h    ← Balance manipulation handlers and history tracking
+│   ├── loan.h           ← Multi-period compound financing calculators
+│   ├── interest.h       ← Local automated checking/savings rate evaluations
+│   └── admin.h          ← Root management control loops
 │
-├── src/               ← Pure Source Code Filepath (.c)
-│   ├── main.c         ← Application gateway, main menu orchestration loops
-│   ├── utils.c        ← Input buffers, automated date tracking tools
-│   ├── display.c      ← Terminal banners, user tables, aesthetic visual separation 
-│   ├── file_io.c      ← Disk file indexing pipelines
-│   ├── auth.c         ← Entry validation parsing arrays
-│   ├── account.c      ← Direct profile manipulation steps
-│   ├── transaction.c  ← Core operational debit and credit functions
-│   ├── loan.c         ← Computational loan formulas
-│   ├── interest.c     ← Monthly balance compounding applications
-│   └── admin.c        ← Root interface utilities
+├── src/                 ← Pure Source Code Filepath (.c)
+│   ├── main.c           ← Application gateway, main menu orchestration loops
+│   ├── utils.c          ← Input buffers, automated date tracking tools
+│   ├── display.c        ← Terminal banners, user tables, aesthetic visual separation 
+│   ├── file_io.c        ← Disk file indexing pipelines
+│   ├── auth.c           ← Entry validation parsing arrays
+│   ├── account.c        ← Direct profile manipulation steps
+│   ├── transaction.c    ← Core operational debit and credit functions
+│   ├── loan.c           ← Computational loan formulas
+│   ├── interest.c       ← Monthly balance compounding applications
+│   └── admin.c          ← Root interface utilities
 │
-├── data/              ← Flat File Database (Built on first runtime)
-│   ├── accounts.txt   ← Delimiter-separated active registry log
-│   ├── transactions.txt← System audit trails
-│   └── loans.txt      ← Active balance financing files
+├── data/                ← Flat File Database (Built on first runtime)
+│   ├── accounts.txt     ← Delimiter-separated active registry log
+│   ├── transactions.txt ← System audit trails
+│   └── loans.txt        ← Active balance financing files
 │
-├── Makefile           ← Global dynamic GNU compiler ruleset file
-└── README.md          ← Project overview page
+├── Makefile             ← Global dynamic GNU compiler ruleset file
+└── README.md            ← Project overview page
 ```
 
 ---
