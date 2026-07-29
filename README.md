@@ -99,7 +99,7 @@ c-bank-system/
 | **Teammate 2 Name** | `12345679` | `auth.c`, `utils.c` | **Auth Module:** Session login loop, 6-digit PIN tracking, console input masking, and global formatting utilities. |
 | **Teammate 3 Name** | `12345680` | `account.c` | **Account Registry:** Account profile lifecycle hooks, full directory CRUD operations, and core profile setups. |
 | **Teammate 4 Name** | `12345681` | `transaction.c` | **Cash Desk System:** Deposits, withdrawals, peer-to-peer balance transfer rules, and transaction history tracking. |
-| **Teammate 5 Name** | `12345682` | `loan.c`, `interest.c` | **Credit Desk System:** Multi-period compound financing models, loan EMI math, and automated monthly balance updates. |
+| **Hasan Ali(2026-2-60-026)** | `12345682` | `loan.c`, `interest.c` | **Credit Desk System:** Multi-period compound financing models, loan EMI math, and automated monthly balance updates. |
 
 
 ## 💿 Internal Flat-File Data Formats
