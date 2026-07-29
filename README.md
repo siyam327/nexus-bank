@@ -96,7 +96,7 @@ c-bank-system/
 | Full Name | Student ID | Core File Map | Feature Responsibility Domain |
 | :--- | :--- | :--- | :--- |
 | **Ariful Islam Siyam** | `2026-2-60-019` | `main.c`, `admin.c`, `display.c`, `file_io.c` | **Project Lead:** Menu flow loop orchestration, admin overrides, flat-file persistence, and UI layout. |
-| **arpita malakar** | `2026-2-60-553` | `auth.c`, `utils.c` | **Auth Module:** Session login loop, 6-digit PIN tracking, console input masking, and global formatting utilities. |
+| **Arpita malakar** | `2026-2-60-553` | `auth.c`, `utils.c` | **Auth Module:** Session login loop, 6-digit PIN tracking, console input masking, and global formatting utilities. |
 | **Md. Mobin Hossain Jitu** | `2026-2-60-538` | `account.c` | **Account Registry:** Account profile lifecycle hooks, full directory CRUD operations, and core profile setups. |
 | **Busrat Jahan** | `2026-2-60-032` | `transaction.c` | **Cash Desk System:** Deposits, withdrawals, peer-to-peer balance transfer rules, and transaction history tracking. |
 | **Hasan Ali** | `2026-2-60-026` | `loan.c`, `interest.c` | **Credit Desk System:** Multi-period compound financing models, loan EMI math, and automated monthly balance updates. |
