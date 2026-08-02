@@ -1,37 +1,23 @@
-CC      = gcc
-CFLAGS  = -Wall -Wextra -std=c11 -Iinclude -lm
-SRC_DIR = src
-BUILD   = build
-TARGET  = bank
+CC = gcc
+CFLAGS = -Wall -Iinclude
+LDFLAGS = -lm
 
-# Grab every .c file in src/
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD)/%.o)
+SRC = src/utils.c src/auth.c src/account.c src/transaction.c \
+      src/loan.c src/interest.c src/file_io.c src/display.c \
+      src/admin.c src/main.c
 
-.PHONY: all clean run
+OBJ = $(SRC:.c=.o)
+TARGET = bank
 
-all: $(BUILD) data $(TARGET)
+all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET) -lm
-	@echo ""
-	@echo "  Build successful! Run with:  ./$(TARGET)"
-	@echo ""
+$(TARGET): $(OBJ)
+	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
 
-$(BUILD)/%.o: $(SRC_DIR)/%.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD):
-	mkdir -p $(BUILD)
-
-data:
-	mkdir -p data
-
-run: all
-	./$(TARGET)
-
 clean:
-	rm -rf $(BUILD) $(TARGET)
-	@echo "Cleaned."
+	rm -f $(OBJ) $(TARGET)
 
-# Windows users with MinGW: run  mingw32-make  instead of  make
+.PHONY: all clean
