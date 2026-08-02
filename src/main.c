@@ -30,8 +30,8 @@ main.c  the top-level menu loop tying every module together
 
 static int user_menu(Session *s) {
     int choice;
-  
-    if (s->logged_in) {
+    // issue fixed: Using 'while' loop instead of 'if'
+    while (s->logged_in) {
         clear_screen();
         print_logo();
         print_centered_line(CYAN "Welcome, " BOLD "%s" RESET CYAN " | Account #%d | Balance: " GREEN BOLD "$%.2f" RESET,
@@ -50,7 +50,7 @@ static int user_menu(Session *s) {
         switch (choice) {
             case 1:  view_my_account(s);   break;
             case 2:  change_pin(s);        break;
-            case 4:  deposit(s);            
+            case 4:  deposit(s);           
             case 5:  withdraw(s);          break;
             case 0:  logout_session(s);    break;
         }
@@ -64,7 +64,7 @@ static int user_menu(Session *s) {
 }
 
 int main() {
-    Session session; 
+    Session session;
     
     int choice;
     ENABLE_COLORS();
