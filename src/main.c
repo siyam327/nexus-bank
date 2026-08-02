@@ -50,7 +50,7 @@ static int user_menu(Session *s) {
         switch (choice) {
             case 1:  view_my_account(s);   break;
             case 2:  change_pin(s);        break;
-            case 4:  deposit(s);           break;
+            case 4:  deposit(s);           break;// issue fixed: used break
             case 5:  withdraw(s);          break;
             case 0:  logout_session(s);    break;
         }
@@ -70,6 +70,8 @@ int main() {
     ENABLE_COLORS();
     make_data_dir();
 
+    memset(&session, 0, sizeof(session));//Memory is explicitly cleared to zeros
+ 
     while (1) {
         clear_screen();
         print_logo();
