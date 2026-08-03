@@ -103,9 +103,8 @@ int admin_toggle_account() {
     fflush(stdout);
     if (!fgets(confirm, sizeof(confirm), stdin)) { press_enter(); return 1; }
     confirm[strcspn(confirm, "\n")] = '\0';
-    
-
-    if (confirm == "YES") { print_info("Cancelled."); press_enter(); return 1; }
+    // fixed: strcmp checks actual string data, not memory addresses
+    if (strcmp(confirm, "YES") != 0) { print_info("Cancelled."); press_enter(); return 1; }
     
  
     acc.is_active = !acc.is_active; //fixed : logical NOT safely toggles boolean state
