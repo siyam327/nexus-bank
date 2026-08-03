@@ -129,7 +129,8 @@ int admin_view_all_loans() {
     if (count == 0) { printf(DIM "  No loans in the system.\n" RESET); press_enter(); return 1; }
     print_loan_table_header();
     
-    for (i = 1; i <= count; i++) print_loan_row(&arr[i]);
+    // fixed: 0 indexed loop safely iterates within array bounds
+    for (i = 0; i < count; i++) print_loan_row(&arr[i]);
     
     print_separator();
     printf(DIM "  Total: %d loan(s)\n" RESET, count);
