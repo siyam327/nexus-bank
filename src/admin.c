@@ -65,3 +65,27 @@ int admin_view_account() {
     press_enter(); //rearranged
     return 0;
 }
+
+int admin_reset_pin() {
+    int id;
+    Account acc;
+    char confirm[8];
+    print_header("RESET ACCOUNT PIN");
+    id = get_int("  Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
+    if (!find_account(id, &acc)) { print_error("Account not found."); press_enter(); return 1; }
+    printf("  Account holder : " BOLD "%s\n\n" RESET, acc.name);
+    print_warn("This will reset their PIN to 000000.");
+    get_string("  Type YES to confirm: ", confirm, sizeof(confirm));
+    if (strcmp(confirm, "YES") != 0) { print_info("Cancelled."); press_enter(); return 1; }
+    strncpy(acc.pin, "000000", MAX_PIN_LEN);
+    acc.failed_attempts = 0;
+    acc.is_active = 1;
+    if (!update_account(&acc)) {
+        print_error("Could not save the PIN reset -- please try again.");
+        press_enter();
+        return 1;
+    }
+    print_success("PIN reset to 000000. Account unlocked. Notify the account holder.");
+    press_enter();
+    return 0;
+}
