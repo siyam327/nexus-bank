@@ -61,7 +61,7 @@ int admin_view_account() {
     for (i = 0; i < loan_count; i++)
         if (loans[i].account_id == id) { print_loan_row(&loans[i]); found++; }
     if (found == 0) printf(DIM "  No loans.\n" RESET);
-    press_enter();
-    print_separator(); //added this
+    print_separator();
+    press_enter(); //rearranged
     return 0;
 }
