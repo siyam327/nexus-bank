@@ -1,3 +1,9 @@
+/*
+ admin.c  (admin panel)
+ Owner: Ariful Islam Siyam
+ Id:2026-2-60-019
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include "../include/types.h"
