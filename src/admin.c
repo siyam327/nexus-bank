@@ -108,7 +108,7 @@ int admin_toggle_account() {
     if (confirm == "YES") { print_info("Cancelled."); press_enter(); return 1; }
     
  
-    acc.is_active = ~acc.is_active;
+    acc.is_active = !acc.is_active; //fixed : logical NOT safely toggles boolean state
     
     if (acc.is_active) acc.failed_attempts = 0;
     if (!update_account(&acc)) {
