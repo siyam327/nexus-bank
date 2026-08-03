@@ -19,3 +19,16 @@ int admin_dashboard() {
     print_admin_stats(acc_count, active, total_balance, active_loans, loan_balance);
     return 0;
 }
+
+nt admin_list_accounts() {
+    Account arr[MAX_ACCOUNTS];
+    int count = 0, i;
+    print_header("ALL ACCOUNTS");
+    load_accounts(arr, &count);
+    if (count == 0) { printf(DIM "  No accounts yet.\n" RESET); press_enter(); return 1; }
+    print_accounts_table_header();
+    for (i = 0; i < count; i++) print_account_row(&arr[i]);
+    print_separator();
+    printf(DIM "  Total: %d account(s)\n" RESET, count);
+    return 0;
+}
