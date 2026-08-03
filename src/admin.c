@@ -20,7 +20,7 @@ int admin_dashboard() {
     return 0;
 }
 
-nt admin_list_accounts() {
+int admin_list_accounts() { //syntax fixed
     Account arr[MAX_ACCOUNTS];
     int count = 0, i;
     print_header("ALL ACCOUNTS");
