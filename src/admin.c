@@ -30,5 +30,6 @@ int admin_list_accounts() { //syntax fixed
     for (i = 0; i < count; i++) print_account_row(&arr[i]);
     print_separator();
     printf(DIM "  Total: %d account(s)\n" RESET, count);
+    press_enter(); //added this
     return 0;
 }
