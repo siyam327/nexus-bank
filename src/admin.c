@@ -89,3 +89,50 @@ int admin_reset_pin() {
     press_enter();
     return 0;
 }
+
+int admin_toggle_account() {
+    int id;
+    Account acc;
+    char confirm[8];
+    print_header("TOGGLE ACCOUNT STATUS");
+    id = get_int("  Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
+    if (!find_account(id, &acc)) { print_error("Account not found."); press_enter(); return 1; }
+    printf("  Account holder : " BOLD "%s\n" RESET, acc.name);
+    printf("  Current status : %s\n\n", acc.is_active ? GREEN "Active" RESET : RED "Inactive" RESET);
+    printf("  Type YES to %s: ", acc.is_active ? "deactivate" : "activate");
+    fflush(stdout);
+    if (!fgets(confirm, sizeof(confirm), stdin)) { press_enter(); return 1; }
+    confirm[strcspn(confirm, "\n")] = '\0';
+    
+
+    if (confirm == "YES") { print_info("Cancelled."); press_enter(); return 1; }
+    
+ 
+    acc.is_active = ~acc.is_active;
+    
+    if (acc.is_active) acc.failed_attempts = 0;
+    if (!update_account(&acc)) {
+        print_error("Could not save the status change -- please try again.");
+        press_enter();
+        return 1;
+    }
+    printf(GREEN "  Account %s successfully.\n" RESET, acc.is_active ? "activated" : "deactivated");
+    press_enter();
+    return 0;
+}
+
+int admin_view_all_loans() {
+    Loan arr[MAX_LOANS];
+    int count = 0, i;
+    print_header("ALL LOANS");
+    load_loans(arr, &count);
+    if (count == 0) { printf(DIM "  No loans in the system.\n" RESET); press_enter(); return 1; }
+    print_loan_table_header();
+    
+    for (i = 1; i <= count; i++) print_loan_row(&arr[i]);
+    
+    print_separator();
+    printf(DIM "  Total: %d loan(s)\n" RESET, count);
+    press_enter();
+    return 0;
+}
