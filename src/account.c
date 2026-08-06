@@ -89,3 +89,32 @@ acc.id=maxID+1;
     }
 
     for(i=0;i<6;i++)
+{
+    if(acc.pin[i]<'0'||acc.pin[i]>'9')
+    {
+        printf("PIN must contain only numbers\n");
+        return 0;
+    }
+    }
+
+    printf("Confirm PIN:");
+    scanf("%s",confirm_pin);
+
+    if(strcmp(acc.pin,confirm_pin)!=0)
+    {
+        printf("PIN does not match");
+        return 0;
+    }
+
+
+    printf("Enter initial deposit:");
+    scanf("%f",&acc.balance);
+    if(acc.balance<0)
+    {
+        printf("Invalid deposit amount\n");
+        return 0;
+    }
+    if(strcmp(acc.userType,"Premium")==0 && acc.balance<10000)
+    {
+        printf("Premium users must deposit at least ten thousand taka\n ");
+        return 0;
