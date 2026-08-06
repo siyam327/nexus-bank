@@ -1,6 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
-// config
+
+// basic config
 #define BANK_NAME            "NEXUS BANK"
 #define BANK_VERSION         "1.0.0"
 #define ADMIN_PASSWORD       "6767"
@@ -11,7 +12,7 @@
 #define STARTING_ACCOUNT_ID  10001
 
 #define MAX_NAME_LEN         50
-#define MAX_PIN_LEN          7 
+#define MAX_PIN_LEN          7      // 6 digits + null terminator, don't go over this
 #define MAX_DATE_LEN         25
 #define MAX_NOTE_LEN         100
 #define MAX_PASS_LEN         32
@@ -19,6 +20,16 @@
 #define SAVINGS_RATE         0.035
 #define CHECKING_RATE        0.010
 #define DEFAULT_LOAN_RATE    0.08
+
+// customer tiers: separate from account type (savings/checking)
+// account type affects interest rate, customer tier affects spending limits
+#define NORMAL_MAX_BALANCE        100000.0
+#define NORMAL_DAILY_WITHDRAW     20000.0
+#define NORMAL_TRANSFER_LIMIT     10000.0
+
+#define PREMIUM_MAX_BALANCE       1000000.0
+#define PREMIUM_DAILY_WITHDRAW    100000.0
+#define PREMIUM_TRANSFER_LIMIT    100000.0
 
 #define MIN_LOAN_AMOUNT      500.0
 #define MAX_LOAN_AMOUNT      100000.0
@@ -30,26 +41,15 @@
 #define TRANSACTIONS_FILE    "data/transactions.txt"
 #define LOANS_FILE           "data/loans.txt"
 
-// colors, just ansi escape codes
-#define RESET    "\x1b[0m"
-#define BOLD     "\x1b[1m"
-#define DIM      "\x1b[2m"
-#define RED      "\x1b[31m"
-#define GREEN    "\x1b[32m"
-#define YELLOW   "\x1b[33m"
-#define BLUE     "\x1b[34m"
-#define MAGENTA  "\x1b[35m"
-#define CYAN     "\x1b[36m"
-#define WHITE    "\x1b[37m"
-
-#define print_success(msg) printf(GREEN  BOLD "  [OK] " RESET GREEN  msg RESET "\n")
-#define print_error(msg)   printf(RED    BOLD "  [!] "  RESET RED    msg RESET "\n")
-#define print_warn(msg)    printf(YELLOW BOLD "  [~] "  RESET YELLOW msg RESET "\n")
-#define print_info(msg)    printf(CYAN   BOLD "  [i] "  RESET CYAN   msg RESET "\n")
+#define print_success(msg) printf("  [OK] " msg "\n")
+#define print_error(msg)   printf("  [!] " msg "\n")
+#define print_warn(msg)    printf("  [~] " msg "\n")
+#define print_info(msg)    printf("  [i] " msg "\n")
 
 // locked structs, ask in group chat before changing anything here
 
 typedef enum { SAVINGS = 0, CHECKING = 1 } AccountType;
+typedef enum { NORMAL = 0, PREMIUM = 1 } CustomerType;
 
 typedef enum {
     TXN_DEPOSIT = 0, TXN_WITHDRAW = 1,
@@ -60,15 +60,18 @@ typedef enum {
 typedef enum { LOAN_ACTIVE = 0, LOAN_PAID = 1, LOAN_DEFAULTED = 2 } LoanStatus;
 
 typedef struct {
-    int         id;
-    char        name[MAX_NAME_LEN];
-    char        pin[MAX_PIN_LEN];
-    AccountType type;
-    double      balance;
-    double      interest_rate;
-    int         is_active;
-    int         failed_attempts;
-    char        created_at[MAX_DATE_LEN];
+    int          id;
+    char         name[MAX_NAME_LEN];
+    char         pin[MAX_PIN_LEN];
+    AccountType  type;
+    CustomerType tier;
+    double       balance;
+    double       interest_rate;
+    int          is_active;
+    int          failed_attempts;
+    double       withdrawn_today;
+    char         last_withdraw_date[MAX_DATE_LEN];
+    char         created_at[MAX_DATE_LEN];
 } Account;
 
 typedef struct {
