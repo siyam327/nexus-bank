@@ -9,12 +9,10 @@ int create_account()
     int maxID=1000;
     int choice;
     int option;
-    char confirm_pin[20];
+    char confirm_pin;
     int i;
 
-
     fp= fopen("account.dat", "rb");
-
     if(fp==NULL)
     {
         acc.id=1001;
@@ -28,10 +26,9 @@ int create_account()
                maxID=acc.id;
            }
        }
-acc.id=maxID+1;
+        acc.id=maxID+1;
         fclose(fp);
     }
-
 
     printf("Enter account holders name:");
     getchar();
@@ -58,7 +55,7 @@ acc.id=maxID+1;
     else
     {
         printf("Invalid choice");
-}
+    }
 
     printf("User type:\n");
     printf("1.Premium\n");
@@ -79,7 +76,6 @@ acc.id=maxID+1;
         printf("Invalid choice");
     }
 
-
     printf("Enter a 6 digit pin:");
     scanf("%s",acc.pin);
     if(strlen(acc.pin)!=6)
@@ -89,12 +85,12 @@ acc.id=maxID+1;
     }
 
     for(i=0;i<6;i++)
-{
-    if(acc.pin[i]<'0'||acc.pin[i]>'9')
     {
-        printf("PIN must contain only numbers\n");
-        return 0;
-    }
+        if(acc.pin[i]<'0'||acc.pin[i]>'9')
+        {
+            printf("PIN must contain only numbers\n");
+            return 0;
+        }
     }
 
     printf("Confirm PIN:");
@@ -105,7 +101,6 @@ acc.id=maxID+1;
         printf("PIN does not match");
         return 0;
     }
-
 
     printf("Enter initial deposit:");
     scanf("%f",&acc.balance);
@@ -118,7 +113,7 @@ acc.id=maxID+1;
     {
         printf("Premium users must deposit at least ten thousand taka\n ");
         return 0;
-}
+    }
 
     acc.active=1;
 
@@ -130,7 +125,6 @@ acc.id=maxID+1;
     }
 
     fwrite(&acc,sizeof(acc),1,fp);
-
     fclose(fp);
 
     printf("Account created successfully\n");
@@ -141,180 +135,198 @@ acc.id=maxID+1;
     printf("User type:%s\n",acc.userType);
     printf("Balance:%.2f\n",acc.balance);
 
-
     return 1;
-
 }
 
+int find_account()
+{
+    struct account acc;
+    int searchID;
+    FILE *fp;
+    int found=0;
 
+    printf("Enter ID:");
+    scanf("%d",&searchID);
 
-
-
-
-    int find_account()
+    fp=fopen("account.dat", "rb");
+    if(fp==NULL)
     {
- struct account acc;
-        int searchID;
-        FILE *fp;
-        int found=0;
-
-        printf("Enter ID:");
-        scanf("%d",&searchID);
-
-        fp=fopen("account.dat", "rb");
-        if(fp==NULL)
-        {
-            printf("File not found\n");
-            return 0;
-        }
-
-        while(fread(&acc,sizeof(struct account),1,fp)==1)
-        {
-            if(acc.id==searchID &&acc.active==1)
-            {
-                found=1;
-                printf("Account found\n");
-                break;
-            }
-
-        }
-fclose(fp);
-
-        if(found==0)
-        {
-            printf("Account not found\n");
-        }
-        return 1;
-
+        printf("File not found\n");
+        return 0;
     }
 
-
-
-
-    int view_account()
+    while(fread(&acc,sizeof(struct account),1,fp)==1)
     {
-        struct account acc;
-        int searchID;
-        FILE *fp;
-        int found=0;
-
-        printf("Enter ID:");
-        scanf("%d",&searchID);
-
-        fp=fopen("account.dat", "rb");
-        if(fp==NULL)
+        if(acc.id==searchID && acc.active==1)
         {
-            printf("File not found\n");
-            return 0;
+            found=1;
+            printf("Account found\n");
+            break;
         }
+    }
+    fclose(fp);
 
-        while(fread(&acc,sizeof(struct account),1,fp)==1)
-        {
-            if(acc.id==searchID && acc.active==1)
-            {
-                found=1;
-                printf("Account found\n");
-                printf("Account ID:%d\n",acc.id);
-                printf("Name:");
-                fputs(acc.name,stdout);
-                printf("Account type:%s\n",acc.type);
- printf("User type:%s\n",acc.userType);
-                printf("Balance:%.2f\n",acc.balance);
+    if(found==0)
+    {
+        printf("Account not found\n");
+    }
+    return 1;
+}
 
-                break;
-            }
+int view_account()
+{
+    struct account acc;
+    int searchID;
+    FILE *fp;
+    int found=0;
 
-        }
-        fclose(fp);
+    printf("Enter ID:");
+    scanf("%d",&searchID);
 
-        if(found==0)
-        {
-            printf("Account not found\n");
-        }
-        return 1;
-
+    fp=fopen("account.dat", "rb");
+    if(fp==NULL)
+    {
+        printf("File not found\n");
+        return 0;
     }
 
-    int update_balance(int searchID, float new_balance)
+    while(fread(&acc,sizeof(struct account),1,fp)==1)
     {
-        FILE *fp;
-        FILE *temp;
-        struct account acc;
-        int found=0;
+        if(acc.id==searchID && acc.active==1)
+        {
+            found=1;
+            printf("Account found\n");
+            printf("Account ID:%d\n",acc.id);
+            printf("Name:");
+            fputs(acc.name,stdout);
+            printf("Account type:%s\n",acc.type);
+            printf("User type:%s\n",acc.userType);
+            printf("Balance:%.2f\n",acc.balance);
+            break;
+        }
+    }
+    fclose(fp);
 
-        fp=fopen("account.dat","rb");
-        if(fp==NULL)
-        {
-            return 0;
-        }
-        temp=fopen("temp.dat","wb");
-        if(temp==NULL)
-        {
-            fclose(fp);
-            return 0;
-        }
+    if(found==0)
+    {
+        printf("Account not found\n");
+    }
+    return 1;
+}
 
-        while(fread(&acc,sizeof(struct account),1,fp)==1)
-        {
-            if(acc.id==searchID && acc.active==1)
-            {
-                found=1;
-                acc.balance=new_balance;  //change
-            }
-            fwrite(&acc,sizeof(struct account),1,temp);
-        }
+int update_balance(int searchID, float new_balance)
+{
+    FILE *fp;
+    FILE *temp;
+    struct account acc;
+    int found=0;
+
+    fp=fopen("account.dat","rb");
+    if(fp==NULL)
+    {
+        return 0;
+    }
+    temp=fopen("temp.dat","wb");
+    if(temp==NULL)
+    {
         fclose(fp);
-        fclose(temp);
+        return 0;
+    }
 
-        if(found==1)
+    while(fread(&acc,sizeof(struct account),1,fp)==1)
+    {
+        if(acc.id==searchID && acc.active==1)
         {
-            remove("account.dat");
-            rename("temp.dat","account.dat");
-            return 1;
+            found=1;
+            acc.balance=new_balance;
         }
-        else
+        fwrite(&acc,sizeof(struct account),1,temp);
+    }
+    fclose(fp);
+    fclose(temp);
+
+    if(found==1)
+    {
+        remove("account.dat");
+        rename("temp.dat","account.dat");
+        return 1;
+    }
+    else
+    {
+        remove("temp.dat");
+        return 0;
+    }
+} // FIXED BUG: Missing closing brace added here. Otherwise close_account was nesting inside.
+
+int close_account() // FIXED TYPO: Added missing function parentheses block ()
+{
+    struct account acc;
+    FILE *fp;
+    FILE *temp;
+    int searchID;
+    int found = 0;
+
+    fp=fopen("account.dat","rb");
+    if(fp==NULL)
+    {
+        printf("File error\n"); // FIXED TYPO: Added missing quotes "" and proper backslash \n
+        return 0;
+    }
+
+    printf("Enter ID:");
+    scanf("%d",&searchID);
+
+    // Phase 1: First scan to validate account constraints before destructive write operations
+    while(fread(&acc,sizeof(acc),1,fp))
+    {
+        if(acc.id==searchID)
         {
-            remove("temp.dat");
-            return 0;
-        }
-
-
-
-
-        int close_account
-        {
-            struct account acc;
-            FILE *fp;
-            int searchID;
-            int choice;
-            char pin[20];
-
-            fp=fopen("account.dat","rb");
-            if(fp==NULL)
+            if(acc.active==0)
             {
-                printf(File error/n);
+                printf("This account is already closed\n");
+                fclose(fp);
                 return 0;
             }
-
-            printf("Enter ID:");
-            scanf("%d",&searchID);
-
-            while(fread(&acc,sizeof(acc),1,fp))
+            if(acc.balance!=0)
             {
-                if(acc.id==searchID)
-                {
-                    if(acc.active==0)
-                    {
-                        printf("This account is already closed/n");
-                        fclose(fp);
-                        return 0;
-                    }
-                    if(acc.balance!=0)
-                    {
-                        printf("Account cannot be closed/n");
-                        printf("Balance must be 0 before closing an account/n");
-                        fclose(fp);
-                        return 0:
-                    }
-                }
+                printf("Account cannot be closed\n");
+                printf("Balance must be 0 before closing an account\n");
+                fclose(fp);
+                return 0;
             }
+            found = 1;
+        }
+    }
+    fclose(fp);
+
+    if(!found) {
+        printf("Account not found\n");
+        return 0;
+    }
+
+    // Phase 2: ADDED LOGIC Database Persistence. Rewriting binary records to explicitly commit acc.active = 0
+    fp = fopen("account.dat", "rb");
+    temp = fopen("temp.dat", "wb");
+    if(fp == NULL || temp == NULL) {
+        if(fp) fclose(fp);
+        if(temp) fclose(temp);
+        return 0;
+    }
+    
+    while(fread(&acc, sizeof(struct account), 1, fp) == 1)
+    {
+        if(acc.id == searchID)
+        {
+            acc.active = 0; // The missing file handling operation that updates state permanently
+        }
+        fwrite(&acc, sizeof(struct account), 1, temp);
+    }
+    fclose(fp);
+    fclose(temp);
+
+    remove("account.dat");
+    rename("temp.dat", "account.dat");
+
+    printf("Account closed successfully!\n");
+    return 1;
+}
