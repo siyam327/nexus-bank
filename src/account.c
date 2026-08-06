@@ -9,7 +9,7 @@ int create_account()
     int maxID=1000;
     int choice;
     int option;
-    char confirm_pin;
+    char confirm_pin[20]; // Fixed string buffer overflow bug
     int i;
 
     fp= fopen("account.dat", "rb");
