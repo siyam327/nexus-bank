@@ -153,3 +153,28 @@ acc.id=maxID+1;
 
     int find_account()
     {
+ struct account acc;
+        int searchID;
+        FILE *fp;
+        int found=0;
+
+        printf("Enter ID:");
+        scanf("%d",&searchID);
+
+        fp=fopen("account.dat", "rb");
+        if(fp==NULL)
+        {
+            printf("File not found\n");
+            return 0;
+        }
+
+        while(fread(&acc,sizeof(struct account),1,fp)==1)
+        {
+            if(acc.id==searchID &&acc.active==1)
+            {
+                found=1;
+                printf("Account found\n");
+                break;
+            }
+
+        }
