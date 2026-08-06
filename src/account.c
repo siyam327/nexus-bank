@@ -277,3 +277,44 @@ fclose(fp);
             remove("temp.dat");
             return 0;
         }
+
+
+
+
+        int close_account
+        {
+            struct account acc;
+            FILE *fp;
+            int searchID;
+            int choice;
+            char pin[20];
+
+            fp=fopen("account.dat","rb");
+            if(fp==NULL)
+            {
+                printf(File error/n);
+                return 0;
+            }
+
+            printf("Enter ID:");
+            scanf("%d",&searchID);
+
+            while(fread(&acc,sizeof(acc),1,fp))
+            {
+                if(acc.id==searchID)
+                {
+                    if(acc.active==0)
+                    {
+                        printf("This account is already closed/n");
+                        fclose(fp);
+                        return 0;
+                    }
+                    if(acc.balance!=0)
+                    {
+                        printf("Account cannot be closed/n");
+                        printf("Balance must be 0 before closing an account/n");
+                        fclose(fp);
+                        return 0:
+                    }
+                }
+            }
