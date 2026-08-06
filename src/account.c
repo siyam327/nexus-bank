@@ -218,3 +218,62 @@ fclose(fp);
                 printf("Name:");
                 fputs(acc.name,stdout);
                 printf("Account type:%s\n",acc.type);
+ printf("User type:%s\n",acc.userType);
+                printf("Balance:%.2f\n",acc.balance);
+
+                break;
+            }
+
+        }
+        fclose(fp);
+
+        if(found==0)
+        {
+            printf("Account not found\n");
+        }
+        return 1;
+
+    }
+
+    int update_balance(int searchID, float new_balance)
+    {
+        FILE *fp;
+        FILE *temp;
+        struct account acc;
+        int found=0;
+
+        fp=fopen("account.dat","rb");
+        if(fp==NULL)
+        {
+            return 0;
+        }
+        temp=fopen("temp.dat","wb");
+        if(temp==NULL)
+        {
+            fclose(fp);
+            return 0;
+        }
+
+        while(fread(&acc,sizeof(struct account),1,fp)==1)
+        {
+            if(acc.id==searchID && acc.active==1)
+            {
+                found=1;
+                acc.balance=new_balance;  //change
+            }
+            fwrite(&acc,sizeof(struct account),1,temp);
+        }
+        fclose(fp);
+        fclose(temp);
+
+        if(found==1)
+        {
+            remove("account.dat");
+            rename("temp.dat","account.dat");
+            return 1;
+        }
+        else
+        {
+            remove("temp.dat");
+            return 0;
+        }
