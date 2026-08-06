@@ -7,11 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "../include/types.h"
-#include "../include/admin.h"
 #include "../include/account.h"
-#include "../include/utils.h"
-#include "../include/file_io.h"
-#include "../include/display.h"
+#include "../include/system.h"
 
 int admin_dashboard() {
     Account accounts[MAX_ACCOUNTS];
@@ -26,17 +23,17 @@ int admin_dashboard() {
     return 0;
 }
 
-int admin_list_accounts() { //syntax fixed
+int admin_list_accounts() {
     Account arr[MAX_ACCOUNTS];
     int count = 0, i;
     print_header("ALL ACCOUNTS");
     load_accounts(arr, &count);
-    if (count == 0) { printf(DIM "  No accounts yet.\n" RESET); press_enter(); return 1; }
+    if (count == 0) { printf( " No accounts yet.\n" ); press_enter(); return 1; }
     print_accounts_table_header();
     for (i = 0; i < count; i++) print_account_row(&arr[i]);
     print_separator();
-    printf(DIM "  Total: %d account(s)\n" RESET, count);
-    press_enter(); //added this
+    printf( " Total: %d account(s)\n", count);
+    press_enter();
     return 0;
 }
 
@@ -48,27 +45,27 @@ int admin_view_account() {
     int txn_count = 0, loan_count = 0, i, found;
 
     print_header("VIEW ACCOUNT DETAILS");
-    id = get_int("  Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
+    id = get_int(" Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
     if (!find_account(id, &acc)) { print_error("Account not found."); press_enter(); return 1; }
     print_account_card(&acc);
 
     load_transactions(txns, &txn_count);
-    printf("\n  Recent Transactions:\n");
+    printf("\n Recent Transactions:\n");
     print_txn_table_header();
     found = 0;
     for (i = txn_count - 1; i >= 0 && found < 10; i--)
         if (txns[i].account_id == id) { print_transaction_row(&txns[i]); found++; }
-    if (found == 0) printf(DIM "  No transactions.\n" RESET);
+    if (found == 0) printf( " No transactions.\n" );
 
     load_loans(loans, &loan_count);
-    printf("\n  Loans:\n");
+    printf("\n Loans:\n");
     print_loan_table_header();
     found = 0;
     for (i = 0; i < loan_count; i++)
         if (loans[i].account_id == id) { print_loan_row(&loans[i]); found++; }
-    if (found == 0) printf(DIM "  No loans.\n" RESET);
+    if (found == 0) printf( " No loans.\n" );
     print_separator();
-    press_enter(); //rearranged
+    press_enter();
     return 0;
 }
 
@@ -76,12 +73,12 @@ int admin_reset_pin() {
     int id;
     Account acc;
     char confirm[8];
-    print_header("RESET ACCOUNT PIN");
-    id = get_int("  Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
+    print_header(" ACCOUNT PIN");
+    id = get_int(" Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
     if (!find_account(id, &acc)) { print_error("Account not found."); press_enter(); return 1; }
-    printf("  Account holder : " BOLD "%s\n\n" RESET, acc.name);
+    printf(" Account holder : " "%s\n\n", acc.name);
     print_warn("This will reset their PIN to 000000.");
-    get_string("  Type YES to confirm: ", confirm, sizeof(confirm));
+    get_string(" Type YES to confirm: ", confirm, sizeof(confirm));
     if (strcmp(confirm, "YES") != 0) { print_info("Cancelled."); press_enter(); return 1; }
     strncpy(acc.pin, "000000", MAX_PIN_LEN);
     acc.failed_attempts = 0;
@@ -101,27 +98,23 @@ int admin_toggle_account() {
     Account acc;
     char confirm[8];
     print_header("TOGGLE ACCOUNT STATUS");
-    id = get_int("  Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
+    id = get_int(" Enter account ID: ", STARTING_ACCOUNT_ID, 99999);
     if (!find_account(id, &acc)) { print_error("Account not found."); press_enter(); return 1; }
-    printf("  Account holder : " BOLD "%s\n" RESET, acc.name);
-    printf("  Current status : %s\n\n", acc.is_active ? GREEN "Active" RESET : RED "Inactive" RESET);
-    printf("  Type YES to %s: ", acc.is_active ? "deactivate" : "activate");
+    printf(" Account holder : " "%s\n", acc.name);
+    printf(" Current status : %s\n\n", acc.is_active ? "Active" : "Inactive" );
+    printf(" Type YES to %s: ", acc.is_active ? "deactivate" : "activate");
     fflush(stdout);
     if (!fgets(confirm, sizeof(confirm), stdin)) { press_enter(); return 1; }
     confirm[strcspn(confirm, "\n")] = '\0';
-    // fixed: strcmp checks actual string data, not memory addresses
     if (strcmp(confirm, "YES") != 0) { print_info("Cancelled."); press_enter(); return 1; }
-    
- 
-    acc.is_active = !acc.is_active; //fixed : logical NOT safely toggles boolean state
-    
+    acc.is_active = !acc.is_active;
     if (acc.is_active) acc.failed_attempts = 0;
     if (!update_account(&acc)) {
         print_error("Could not save the status change -- please try again.");
         press_enter();
         return 1;
     }
-    printf(GREEN "  Account %s successfully.\n" RESET, acc.is_active ? "activated" : "deactivated");
+    printf( " Account %s successfully.\n", acc.is_active ? "activated" : "deactivated");
     press_enter();
     return 0;
 }
@@ -131,14 +124,12 @@ int admin_view_all_loans() {
     int count = 0, i;
     print_header("ALL LOANS");
     load_loans(arr, &count);
-    if (count == 0) { printf(DIM "  No loans in the system.\n" RESET); press_enter(); return 1; }
+    if (count == 0) { printf( " No loans in the system.\n" ); press_enter(); return 1; }
     print_loan_table_header();
-    
-    // fixed: 0 indexed loop safely iterates within array bounds
     for (i = 0; i < count; i++) print_loan_row(&arr[i]);
-    
     print_separator();
-    printf(DIM "  Total: %d loan(s)\n" RESET, count);
+    printf( " Total: %d loan(s)\n", count);
     press_enter();
     return 0;
 }
+
