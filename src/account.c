@@ -118,3 +118,38 @@ acc.id=maxID+1;
     {
         printf("Premium users must deposit at least ten thousand taka\n ");
         return 0;
+}
+
+    acc.active=1;
+
+    fp=fopen("account.dat","ab");
+    if(fp==NULL)
+    {
+        printf("File error");
+        return 0;
+    }
+
+    fwrite(&acc,sizeof(acc),1,fp);
+
+    fclose(fp);
+
+    printf("Account created successfully\n");
+    printf("Account ID:%d\n",acc.id);
+    printf("Name:");
+    fputs(acc.name,stdout);
+    printf("Account type:%s\n",acc.type);
+    printf("User type:%s\n",acc.userType);
+    printf("Balance:%.2f\n",acc.balance);
+
+
+    return 1;
+
+}
+
+
+
+
+
+
+    int find_account()
+    {
