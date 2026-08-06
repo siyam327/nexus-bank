@@ -58,3 +58,34 @@ acc.id=maxID+1;
     else
     {
         printf("Invalid choice");
+}
+
+    printf("User type:\n");
+    printf("1.Premium\n");
+    printf("2.Normal\n");
+
+    printf("Enter a number:");
+    scanf("%d",&option);
+    if(option==1)
+    {
+        strcpy(acc.userType,"Premium");
+    }
+    else if(option==2)
+    {
+        strcpy(acc.userType,"Normal");
+    }
+    else
+    {
+        printf("Invalid choice");
+    }
+
+
+    printf("Enter a 6 digit pin:");
+    scanf("%s",acc.pin);
+    if(strlen(acc.pin)!=6)
+    {
+        printf("PIN must be in 6 digits\n");
+        return 0;
+    }
+
+    for(i=0;i<6;i++)
