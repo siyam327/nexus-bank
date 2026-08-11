@@ -1,319 +1,130 @@
+/* 
+ * main.c  - the top level menu loop tying every module together
+ * Owner: Siyam
+ */
 #include <stdio.h>
+#include <string.h>
+#include "../include/types.h"
+#include "../include/account.h"
+#include "../include/banking.h"
+#include "../include/system.h"
 
-#include "cashdesk.h"
-
-
-int main()
-{
-    Customer customers[MAX_CUSTOMERS];
-
-    int customerCount;
-
+static int user_menu(Session *s) {
     int choice;
+    char line[160];
+    while (s->logged_in) {
+        clear_screen();
+        print_logo();
+        snprintf(line, sizeof(line), "Welcome, %s | Account #%d | Balance: $%.2f",
+                 s->account.name, s->account.id, s->account.balance);
+        print_centered(line);
+        printf("\n");
+        print_separator();
+        print_centered("ACCOUNT");
+        print_menu_item(1, "View my account");
+        print_menu_item(2, "Change PIN");
+        print_menu_item(3, "Close account");
+        printf("\n");
+        print_centered("TRANSACTIONS");
+        print_menu_item(4, "Deposit");
+        print_menu_item(5, "Withdraw");
+        print_menu_item(6, "Transfer");
+        print_menu_item(7, "Transaction history");
+        printf("\n");
+        print_centered("LOANS & INTEREST");
+        print_menu_item(8, "Apply for loan");
+        print_menu_item(9, "Make loan payment");
+        print_menu_item(10, "View my loans");
+        print_menu_item(11, "Apply interest (savings)");
+        printf("\n");
+        print_centered("OTHER");
+        print_menu_item(12, "Export account statement");
+        printf("\n");
+        print_menu_item(0, "Logout");
+        print_separator();
 
-    int id;
-
-
-    /* Array */
-
-    int menuNumbers[9] =
-    {
-        1, 2, 3,
-        4, 5, 6,
-        7, 8, 9
-    };
-
-
-    /* Multidimensional Array */
-
-    char menuNames[9][40] =
-    {
-        "Create Customer",
-        "Deposit Money",
-        "Withdraw Money",
-        "Peer-to-Peer Transfer",
-        "Show Customer Information",
-        "Show Customer Statement",
-        "Show All Transaction History",
-        "Reset Daily Withdrawal Limit",
-        "Exit"
-    };
-
-
-    /* Pointer */
-
-    Customer *customerPointer;
-
-
-    customerCount =
-        loadCustomers(
-            customers
-        );
-
-
-    /* Pointer Assignment */
-
-    customerPointer =
-        customers;
-
-
-    printf(
-        "\n============================================\n"
-    );
-
-    printf(
-        "          CASH DESK SYSTEM\n"
-    );
-
-    printf(
-        "============================================\n"
-    );
-
-
-    /* Nested Loop */
-
-    {
-        int i;
-        int j;
-
-        for (
-            i = 0;
-            i < 1;
-            i++
-        )
-        {
-            for (
-                j = 0;
-                j < 1;
-                j++
-            )
-            {
-                printf(
-                    "Welcome to Cash Desk System!\n"
-                );
-            }
+        choice = get_int("\nYour choice: ", 0, 12);
+        clear_screen();
+        switch (choice) {
+            case 1: view_my_account(s); break;
+            case 2: change_pin(s); break;
+            case 3: delete_my_account(s); break;
+            case 4: deposit(s); break;
+            case 5: withdraw(s); break;
+            case 6: transfer(s); break;
+            case 7: view_history(s); break;
+            case 8: apply_for_loan(s); break;
+            case 9: make_loan_payment(s); break;
+            case 10: view_my_loans(s); break;
+            case 11: apply_interest(s); break;
+            case 12: export_statement(s); break;
+            case 0: logout_session(s); break;
+        }
+        // balance might have changed after whatever action ran, refresh it
+        if (s->logged_in) {
+            Account fresh;
+            if (find_account(s->account.id, &fresh)) s->account.balance = fresh.balance;
         }
     }
-
-
-    do
-    {
-        printf(
-            "\n============== MAIN MENU ==============\n"
-        );
-
-
-        /* Loop + Multidimensional Array */
-
-        {
-            int i;
-
-            for (
-                i = 0;
-                i < 9;
-                i++
-            )
-            {
-                printf(
-                    "%d. %s\n",
-                    menuNumbers[i],
-                    menuNames[i]
-                );
-            }
-        }
-
-
-        printf(
-            "========================================\n"
-        );
-
-
-        printf(
-            "Enter your choice: "
-        );
-
-
-        scanf(
-            "%d",
-            &choice
-        );
-
-
-        /* Switch */
-
-        switch (choice)
-        {
-            case 1:
-
-                customerCount =
-                    createCustomer(
-                        customers,
-                        customerCount
-                    );
-
-
-                saveCustomers(
-                    customers,
-                    customerCount
-                );
-
-
-                break;
-
-
-            case 2:
-
-                if (
-                    depositMoney(
-                        customers,
-                        customerCount
-                    )
-                )
-                {
-                    saveCustomers(
-                        customers,
-                        customerCount
-                    );
-                }
-
-
-                break;
-
-
-            case 3:
-
-                if (
-                    withdrawMoney(
-                        customers,
-                        customerCount
-                    )
-                )
-                {
-                    saveCustomers(
-                        customers,
-                        customerCount
-                    );
-                }
-
-
-                break;
-
-
-            case 4:
-
-                if (
-                    transferMoney(
-                        customers,
-                        customerCount
-                    )
-                )
-                {
-                    saveCustomers(
-                        customers,
-                        customerCount
-                    );
-                }
-
-
-                break;
-
-
-            case 5:
-
-                showCustomer(
-                    customers,
-                    customerCount
-                );
-
-
-                break;
-
-
-            case 6:
-
-                printf(
-                    "\nEnter Customer ID: "
-                );
-
-
-                scanf(
-                    "%d",
-                    &id
-                );
-
-
-                showStatement(
-                    id
-                );
-
-
-                break;
-
-
-            case 7:
-
-                showTransactionHistory();
-
-
-                break;
-
-
-            case 8:
-
-                resetDailyWithdrawals(
-                    customers,
-                    customerCount
-                );
-
-
-                saveCustomers(
-                    customers,
-                    customerCount
-                );
-
-
-                printf(
-                    "\nDaily withdrawal reset successful.\n"
-                );
-
-
-                break;
-
-
-            case 9:
-
-                saveCustomers(
-                    customers,
-                    customerCount
-                );
-
-
-                printf(
-                    "\nData saved successfully.\n"
-                );
-
-
-                printf(
-                    "Thank you for using Cash Desk System!\n"
-                );
-
-
-                break;
-
-
-            default:
-
-                printf(
-                    "\nInvalid choice!\n"
-                );
-        }
-
-
-    }
-    while (
-        choice != 9
-    );
-
-
     return 0;
+}
+
+static int admin_menu(Session *s) {
+    int choice;
+    while (s->logged_in && s->is_admin) {
+        clear_screen();
+        print_logo();
+        print_centered("*** ADMIN PANEL ***");
+        printf("\n");
+        admin_dashboard();
+        print_separator();
+        print_menu_item(1, "List all accounts");
+        print_menu_item(2, "View account details");
+        print_menu_item(3, "Reset account PIN");
+        print_menu_item(4, "Activate / deactivate account");
+        print_menu_item(5, "View all loans");
+        print_menu_item(0, "Logout");
+        print_separator();
+
+        choice = get_int("\nYour choice: ", 0, 5);
+        clear_screen();
+        switch (choice) {
+            case 1: admin_list_accounts(); break;
+            case 2: admin_view_account(); break;
+            case 3: admin_reset_pin(); break;
+            case 4: admin_toggle_account(); break;
+            case 5: admin_view_all_loans(); break;
+            case 0: logout_session(s); break;
+        }
+    }
+    return 0;
+}
+
+int main() {
+    Session session;
+    int choice;
+    make_data_dir();
+    memset(&session, 0, sizeof(session));
+
+    while (1) {
+        clear_screen();
+        print_logo();
+        print_separator();
+        print_menu_item(1, "User Login");
+        print_menu_item(2, "Open New Account");
+        print_menu_item(3, "Admin Login");
+        print_menu_item(0, "Exit");
+        print_separator();
+
+        choice = get_int("\nYour choice: ", 0, 3);
+        switch (choice) {
+            case 1: clear_screen(); if (login_user(&session)) user_menu(&session); break;
+            case 2: clear_screen(); create_account(); break;
+            case 3: clear_screen(); if (login_admin(&session)) admin_menu(&session); break;
+            case 0:
+                clear_screen();
+                printf("\nThank you for using %s. Goodbye!\n\n", BANK_NAME);
+                return 0;
+        }
+    }
 }
