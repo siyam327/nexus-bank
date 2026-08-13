@@ -1,4 +1,7 @@
-
+/*
+file_io.c (reading/writing the pipe delimited data files)
+Owner: Siyam
+*/
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -6,7 +9,7 @@
 #include "../include/system.h"
 
 // file format: id|name|pin|type|tier|balance|interest_rate|is_active|failed_attempts|withdrawn_today|last_withdraw_date|created_at
-// example line: 10001|Rafiq Ahmed|123456|0|0|1500.00|0.0350|1|0|0.00|2026-07-01 10:22:00|2026-07-01 10:22:00
+// example line: 10001|Ariful Islam Siyam|123456|0|0|1500.00|0.0350|1|0|0.00|2026-07-01 10:22:00|2026-07-01 10:22:00
 
 // errno is set by the C library whenever a system call like fopen() fails.
 // strerror(errno) turns that number into a human-readable reason ("No such
@@ -21,7 +24,7 @@ int load_accounts(Account *arr, int *count) {
     char line[512];
     *count = 0;
 
-    errno = 0; // clear it first - errno only means something right after a failed call
+    errno = 0; // clear it first, errno only means something right after a failed call
     fp = fopen(ACCOUNTS_FILE, "r");
     if (!fp) {
         // file not existing yet on first run isn't a real error for us
