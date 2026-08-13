@@ -1,10 +1,14 @@
-
+/*
+ display.c (all print/menu formatting)
+ Owner: Siyam
+ */
 #include <stdio.h>
 #include <string.h>
 #include "../include/types.h"
 #include "../include/system.h"
 
-// centering
+// simple centering, just assumes a 60 character line width and pads
+// with spaces, no terminal size detection needed
 #define SCREEN_WIDTH 80
 
 static const char *account_type_str(AccountType t) { return t == SAVINGS ? "Savings" : "Checking"; }
