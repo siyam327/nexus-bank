@@ -1,332 +1,142 @@
+/*
+ account.c -- account management
+ Owner: Jeetu
+ Contains: create/find/view/close account, update balance.
+ */
 #include <stdio.h>
 #include <string.h>
-#include "account.h"
+#include "../include/types.h"
+#include "../include/account.h"
+#include "../include/system.h"
 
-int create_account()
-{
-    struct account acc;
-    FILE *fp;
-    int maxID=1000;
+int find_account(int id, Account *out) {
+    Account arr[MAX_ACCOUNTS];
+    int count = 0, i;
+    load_accounts(arr, &count);
+    for (i = 0; i < count; i++) {
+        if (arr[i].id == id) { *out = arr[i]; return 1; }
+    }
+    return 0;
+}
+
+int create_account() {
+    Account arr[MAX_ACCOUNTS];
+    int count = 0;
+    Account new_acc;
+    char pin2[MAX_PIN_LEN];
     int choice;
-    int option;
-    char confirm_pin[20]; // Fixed string buffer overflow bug
-    int i;
 
-    fp= fopen("account.dat", "rb");
-    if(fp==NULL)
-    {
-        acc.id=1001;
-    }
-    else
-    {
-        while(fread(&acc,sizeof(acc),1,fp))
-       {
-           if(acc.id>maxID)
-           {
-               maxID=acc.id;
-           }
-       }
-        acc.id=maxID+1;
-        fclose(fp);
-    }
+    print_header("OPEN NEW ACCOUNT");
+    memset(&new_acc, 0, sizeof(Account));
 
-    printf("Enter account holders name:");
-    getchar();
-    fgets(acc.name,30,stdin);
+    get_string(" Full name : ", new_acc.name, MAX_NAME_LEN);
+    if (strlen(new_acc.name) < 2) { print_error("Name is too short."); press_enter(); return 1; }
 
-    if(strlen(acc.name)<2){
-        printf("Invalid name");
-        return 0;
-    }
+    printf("\n Account type:\n");
+    print_menu_item(1, "Savings (3.5%% interest/year)");
+    print_menu_item(2, "Checking (1.0%% interest/year)");
+    printf("\n");
+    choice = get_int(" Choose [1-2]: ", 1, 2);
+    new_acc.type = (choice == 1) ? SAVINGS : CHECKING;
+    new_acc.interest_rate = (new_acc.type == SAVINGS) ? SAVINGS_RATE : CHECKING_RATE;
 
-    printf("Account type:\n");
-    printf("1.Savings\n");
-    printf("2.Checking\n");
-    printf("Enter a number:");
-    scanf("%d",&choice);
-    if(choice==1)
-    {
-        strcpy(acc.type,"Savings");
+    printf("\n Customer tier:\n");
+    print_menu_item(1, "Normal (balance up to $100,000, $20,000/day withdraw limit)");
+    print_menu_item(2, "Premium (balance up to $1,000,000, $100,000/day withdraw limit)");
+    printf("\n");
+    choice = get_int(" Choose [1-2]: ", 1, 2);
+    new_acc.tier = (choice == 1) ? NORMAL : PREMIUM;
+
+    printf("\n");
+    get_pin(" Set a 6-digit PIN : ", new_acc.pin);
+    if (strlen(new_acc.pin) != 6 || !is_digits_only(new_acc.pin)) {
+        print_error("PIN must be exactly 6 digits."); press_enter(); return 1;
     }
-    else if(choice==2)
-    {
-        strcpy(acc.type,"Checking");
-    }
-    else
-    {
-        printf("Invalid choice");
+    get_pin(" Confirm PIN : ", pin2);
+    if (strcmp(new_acc.pin, pin2) != 0) {
+        print_error("PINs don't match. Account not created."); press_enter(); return 1;
     }
 
-    printf("User type:\n");
-    printf("1.Premium\n");
-    printf("2.Normal\n");
+    printf("\n");
+    new_acc.balance = get_double(" Initial deposit ($): ", 0.0, max_balance_for(new_acc.tier));
+    new_acc.id = generate_account_id();
+    new_acc.is_active = 1;
+    new_acc.withdrawn_today = 0.0;
+    get_current_datetime(new_acc.created_at);
+    strncpy(new_acc.last_withdraw_date, new_acc.created_at, MAX_DATE_LEN - 1);
 
-    printf("Enter a number:");
-    scanf("%d",&option);
-    if(option==1)
-    {
-        strcpy(acc.userType,"Premium");
-    }
-    else if(option==2)
-    {
-        strcpy(acc.userType,"Normal");
-    }
-    else
-    {
-        printf("Invalid choice");
-    }
-
-    printf("Enter a 6 digit pin:");
-    scanf("%s",acc.pin);
-    if(strlen(acc.pin)!=6)
-    {
-        printf("PIN must be in 6 digits\n");
-        return 0;
-    }
-
-    for(i=0;i<6;i++)
-    {
-        if(acc.pin[i]<'0'||acc.pin[i]>'9')
-        {
-            printf("PIN must contain only numbers\n");
-            return 0;
-        }
-    }
-
-    printf("Confirm PIN:");
-    scanf("%s",confirm_pin);
-
-    if(strcmp(acc.pin,confirm_pin)!=0)
-    {
-        printf("PIN does not match");
-        return 0;
-    }
-
-    printf("Enter initial deposit:");
-    scanf("%f",&acc.balance);
-    if(acc.balance<0)
-    {
-        printf("Invalid deposit amount\n");
-        return 0;
-    }
-    if(strcmp(acc.userType,"Premium")==0 && acc.balance<10000)
-    {
-        printf("Premium users must deposit at least ten thousand taka\n ");
-        return 0;
-    }
-
-    acc.active=1;
-
-    fp=fopen("account.dat","ab");
-    if(fp==NULL)
-    {
-        printf("File error");
-        return 0;
-    }
-
-    fwrite(&acc,sizeof(acc),1,fp);
-    fclose(fp);
-
-    printf("Account created successfully\n");
-    printf("Account ID:%d\n",acc.id);
-    printf("Name:");
-    fputs(acc.name,stdout);
-    printf("Account type:%s\n",acc.type);
-    printf("User type:%s\n",acc.userType);
-    printf("Balance:%.2f\n",acc.balance);
-
-    return 1;
-}
-
-int find_account()
-{
-    struct account acc;
-    int searchID;
-    FILE *fp;
-    int found=0;
-
-    printf("Enter ID:");
-    scanf("%d",&searchID);
-
-    fp=fopen("account.dat", "rb");
-    if(fp==NULL)
-    {
-        printf("File not found\n");
-        return 0;
-    }
-
-    while(fread(&acc,sizeof(struct account),1,fp)==1)
-    {
-        if(acc.id==searchID && acc.active==1)
-        {
-            found=1;
-            printf("Account found\n");
-            break;
-        }
-    }
-    fclose(fp);
-
-    if(found==0)
-    {
-        printf("Account not found\n");
-    }
-    return 1;
-}
-
-int view_account()
-{
-    struct account acc;
-    int searchID;
-    FILE *fp;
-    int found=0;
-
-    printf("Enter ID:");
-    scanf("%d",&searchID);
-
-    fp=fopen("account.dat", "rb");
-    if(fp==NULL)
-    {
-        printf("File not found\n");
-        return 0;
-    }
-
-    while(fread(&acc,sizeof(struct account),1,fp)==1)
-    {
-        if(acc.id==searchID && acc.active==1)
-        {
-            found=1;
-            printf("Account found\n");
-            printf("Account ID:%d\n",acc.id);
-            printf("Name:");
-            fputs(acc.name,stdout);
-            printf("Account type:%s\n",acc.type);
-            printf("User type:%s\n",acc.userType);
-            printf("Balance:%.2f\n",acc.balance);
-            break;
-        }
-    }
-    fclose(fp);
-
-    if(found==0)
-    {
-        printf("Account not found\n");
-    }
-    return 1;
-}
-
-int update_balance(int searchID, float new_balance)
-{
-    FILE *fp;
-    FILE *temp;
-    struct account acc;
-    int found=0;
-
-    fp=fopen("account.dat","rb");
-    if(fp==NULL)
-    {
-        return 0;
-    }
-    temp=fopen("temp.dat","wb");
-    if(temp==NULL)
-    {
-        fclose(fp);
-        return 0;
-    }
-
-    while(fread(&acc,sizeof(struct account),1,fp)==1)
-    {
-        if(acc.id==searchID && acc.active==1)
-        {
-            found=1;
-            acc.balance=new_balance;
-        }
-        fwrite(&acc,sizeof(struct account),1,temp);
-    }
-    fclose(fp);
-    fclose(temp);
-
-    if(found==1)
-    {
-        remove("account.dat");
-        rename("temp.dat","account.dat");
+    load_accounts(arr, &count);
+    if (count >= MAX_ACCOUNTS) { print_error("System limit reached."); press_enter(); return 1; }
+    arr[count++] = new_acc;
+    if (!save_accounts(arr, count)) {
+        print_error("Could not save the new account. Please try again.");
+        press_enter();
         return 1;
     }
-    else
-    {
-        remove("temp.dat");
-        return 0;
+
+    printf("\n" " Account created successfully!\n" );
+    printf(" Your Account ID: " "%d\n", new_acc.id);
+    printf(" Keep this number safe, you'll need it to log in.\n\n");
+    print_account_card(&new_acc);
+    press_enter();
+    return 0;
+}
+
+int view_my_account(const Session *s) {
+    Account fresh;
+    print_header("MY ACCOUNT");
+    if (!find_account(s->account.id, &fresh)) { print_error("Could not load account data."); press_enter(); return 1; }
+    print_account_card(&fresh);
+    press_enter();
+    return 0;
+}
+
+// doesn't actually delete anything, just flips is_active off. transactions
+// still need the account record to exist so we can't just remove it
+int delete_my_account(Session *s) {
+    char pin[MAX_PIN_LEN], confirm[8];
+    Account fresh;
+
+    print_header("CLOSE ACCOUNT");
+    print_warn("This will permanently deactivate your account.");
+    printf(" You must have a zero balance before closing.\n\n");
+
+    if (!find_account(s->account.id, &fresh)) { print_error("Account not found."); press_enter(); return 1; }
+    if (fresh.balance > 0.01) { print_error("Please withdraw all funds before closing."); press_enter(); return 1; }
+
+    get_pin(" Confirm PIN to proceed : ", pin);
+    if (strcmp(s->account.pin, pin) != 0) { print_error("Wrong PIN. Cancelled."); press_enter(); return 1; }
+
+    get_string(" Type YES to confirm : ", confirm, sizeof(confirm));
+    if (strcmp(confirm, "YES") != 0) { print_info("Cancelled. No changes made."); press_enter(); return 1; }
+
+    fresh.is_active = 0;
+    if (!update_account(&fresh)) {
+        print_error("Could not close the account -- please try again.");
+        press_enter();
+        return 1;
     }
-} // FIXED BUG: Missing closing brace added here. Otherwise close_account was nesting inside.
+    print_success("Account closed. Thank you for banking with us.");
+    memset(s, 0, sizeof(Session));
+    press_enter();
+    return 0;
+}
 
-int close_account() // FIXED TYPO: Added missing function parentheses block ()
-{
-    struct account acc;
-    FILE *fp;
-    FILE *temp;
-    int searchID;
-    int found = 0;
+int update_balance(int account_id, double new_balance) {
+    Account acc;
+    if (!find_account(account_id, &acc)) return 0;
+    acc.balance = new_balance;
+    return update_account(&acc);
+}
 
-    fp=fopen("account.dat","rb");
-    if(fp==NULL)
-    {
-        printf("File error\n"); // FIXED TYPO: Added missing quotes "" and proper backslash \n
-        return 0;
-    }
+double max_balance_for(CustomerType tier) {
+    return (tier == PREMIUM) ? PREMIUM_MAX_BALANCE : NORMAL_MAX_BALANCE;
+}
 
-    printf("Enter ID:");
-    scanf("%d",&searchID);
+double daily_withdraw_limit_for(CustomerType tier) {
+    return (tier == PREMIUM) ? PREMIUM_DAILY_WITHDRAW : NORMAL_DAILY_WITHDRAW;
+}
 
-    // Phase 1: First scan to validate account constraints before destructive write operations
-    while(fread(&acc,sizeof(acc),1,fp))
-    {
-        if(acc.id==searchID)
-        {
-            if(acc.active==0)
-            {
-                printf("This account is already closed\n");
-                fclose(fp);
-                return 0;
-            }
-            if(acc.balance!=0)
-            {
-                printf("Account cannot be closed\n");
-                printf("Balance must be 0 before closing an account\n");
-                fclose(fp);
-                return 0;
-            }
-            found = 1;
-        }
-    }
-    fclose(fp);
-
-    if(!found) {
-        printf("Account not found\n");
-        return 0;
-    }
-
-    // Phase 2: ADDED LOGIC Database Persistence. Rewriting binary records to explicitly commit acc.active = 0
-    fp = fopen("account.dat", "rb");
-    temp = fopen("temp.dat", "wb");
-    if(fp == NULL || temp == NULL) {
-        if(fp) fclose(fp);
-        if(temp) fclose(temp);
-        return 0;
-    }
-    
-    while(fread(&acc, sizeof(struct account), 1, fp) == 1)
-    {
-        if(acc.id == searchID)
-        {
-            acc.active = 0; // The missing file handling operation that updates state permanently
-        }
-        fwrite(&acc, sizeof(struct account), 1, temp);
-    }
-    fclose(fp);
-    fclose(temp);
-
-    remove("account.dat");
-    rename("temp.dat", "account.dat");
-
-    printf("Account closed successfully!\n");
-    return 1;
+double transfer_limit_for(CustomerType tier) {
+    return (tier == PREMIUM) ? PREMIUM_TRANSFER_LIMIT : NORMAL_TRANSFER_LIMIT;
 }
