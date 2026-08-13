@@ -1,6 +1,6 @@
 /* 
- * main.c  - the top level menu loop tying every module together
- * Owner: Siyam
+ main.c (the top level menu loop tying every module together)
+ Owner: Siyam
  */
 #include <stdio.h>
 #include <string.h>
