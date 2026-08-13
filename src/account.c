@@ -1,5 +1,5 @@
 /*
- account.c - account management
+ account.c (account management)
  Owner: Jeetu
  Contains: create/find/view/close account, update balance.
  */
