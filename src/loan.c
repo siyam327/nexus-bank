@@ -1,8 +1,7 @@
 /*
- * loan.c  -  loans + savings interest
- * Owner: Hasan
+ loan.c (loans + savings interest)
+ Owner: Hasan
 */
-#include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include "../include/types.h"
@@ -13,7 +12,7 @@
 // loan section
 
 /* internal math helpers, broken into small steps on purpose so
- * each part of the amortization can be tested/read on its own */
+   each part of the amortization can be tested/read on its own */
 
 // standard loan amortization formula
 // r = monthly rate (annual rate / 12), n = number of months
@@ -173,7 +172,7 @@ int make_loan_payment(Session *s) {
     }
 
     // recompute this month's interest/principal split off the CURRENT
-    // remaining balance, rather than just subtracting a flat amount 
+    // remaining balance, rather than just subtracting a flat amount
     // this is what actually makes it an amortization schedule
     double interest_this_month = calculate_loan_monthly_interest(loan->remaining_balance, loan->interest_rate);
     double principal_this_month = calculate_principal_payment(loan->monthly_payment, interest_this_month);
@@ -196,7 +195,7 @@ int make_loan_payment(Session *s) {
         return 1;
     }
     if (!save_loans(arr, count)) {
-        // account was already debited - put the money back since the loan
+        // account was already debited, put the money back since the loan
         // record itself never actually got the payment
         acc.balance += payment;
         if (update_account(&acc)) {
@@ -289,3 +288,4 @@ int apply_interest(Session *s) {
     press_enter();
     return 0;
 }
+
