@@ -24,14 +24,14 @@ Every function returns an `int` status code (no `void` functions in the project)
 
 ### Mac / Linux
 ```bash
-cd c-bank-system
+cd nexus-bank
 make
 ./bank
 ```
 
 ### Windows (MinGW)
 ```bash
-cd c-bank-system
+cd nexus-bank
 mingw32-make
 bank.exe
 ```
@@ -45,10 +45,10 @@ Needs `gcc`. On Windows, install [MinGW-w64](https://mingw-w64.org) or just use 
 ```
 c-bank-system/
 ├── include/
-│   ├── types.h        shared structs, enums, constants
-│   ├── account.h      input helpers, login/PIN, account create/find/view/close, tier limits
-│   ├── banking.h      deposit/withdraw/transfer, loans, interest
-│   └── system.h       file I/O, all display/print functions, admin panel
+│   ├── types.h         shared structs, enums, constants
+│   ├── account.h       input helpers, login/PIN, account create/find/view/close, tier limits
+│   ├── banking.h       deposit/withdraw/transfer, loans, interest
+│   └── system.h        file I/O, all display/print functions, admin panel
 │
 ├── src/
 │   ├── main.c          menu loop, ties everything together
@@ -56,13 +56,13 @@ c-bank-system/
 │   ├── auth.c          login, logout, pin management
 │   ├── account.c       account create/find/view/close
 │   ├── transaction.c   deposit, withdraw, transfer, history
-│   ├── loan.c           loan application and repayment
+│   ├── loan.c          loan application and repayment
 │   ├── interest.c      savings interest
 │   ├── file_io.c       reading/writing the data files
 │   ├── display.c       print/menu formatting
-│   └── admin.c          admin panel
+│   └── admin.c         admin panel
 │
-├── data/                created automatically on first run
+├── data/               created automatically on first run
 │   ├── accounts.txt
 │   ├── transactions.txt
 │   └── loans.txt
