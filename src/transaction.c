@@ -1,6 +1,7 @@
 /*
 transaction.c (transactions)
-Owner: Bushra
+Owner: Busrat Jahan
+Id:2026-2-6-032
 Contains: deposit, withdraw, transfer, history, statement export.
 */
 #include <stdio.h>
