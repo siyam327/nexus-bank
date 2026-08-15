@@ -1,6 +1,7 @@
 /*
 utils.c (shared input helpers, id generators, misc)
-Owner: Arpita
+Owner: Arpita Malakar
+Id:2026-2-60-553
 */
 #include <stdio.h>
 #include <string.h>
