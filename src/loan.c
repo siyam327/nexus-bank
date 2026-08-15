@@ -1,6 +1,7 @@
 /*
  loan.c (loans + savings interest)
- Owner: Hasan
+ Owner: Hasan Ali
+ ID:2026-2-60-026
 */
 #include <string.h>
 #include <math.h>
