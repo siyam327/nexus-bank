@@ -1,10 +1,9 @@
 # Nexus Bank
 
-CSE103 Structured Programming group project. A console bank management system written in C — accounts, deposits/withdrawals, transfers, loans, interest, and an admin panel. No database, just plain text files.
+CSE103 Structured Programming group project. A console bank management system written in C, accounts, deposits/withdrawals, transfers, loans, interest, and an admin panel. No database, just plain text files.
 
-5-person team project.
+5 person team project.
 
----
 
 ## Features
 
@@ -18,7 +17,7 @@ CSE103 Structured Programming group project. A console bank management system wr
 
 Every function returns an `int` status code (no `void` functions in the project) and file errors are reported using `errno`/`strerror`.
 
----
+
 
 ## Build and run
 
@@ -38,7 +37,7 @@ bank.exe
 
 Needs `gcc`. On Windows, install [MinGW-w64](https://mingw-w64.org) or just use WSL.
 
----
+
 
 ## Project structure
 
