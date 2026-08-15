@@ -82,7 +82,7 @@ We started with one header per file (10 total) but merged them down to 4, groupe
 | Arpita Malakar | 2026-2-60-553 | `auth.c`, `utils.c` | login/PIN handling, shared input helpers |
 | Md. Mobin Hossain Jitu | 2026-2-60-538 | `account.c` | account create/find/view/close |
 | Busrat Jahan | 2026-2-60-032 | `transaction.c` | deposit, withdraw, transfer, history |
-| Hasan Ali | 2026-2-60-026 | `loan.c`, `interest.c` | loan math, interest calculation |
+| Hasan Ali | 2026-2-60-026 | `loan.c` | loan math, interest calculation |
 
 ---
 
