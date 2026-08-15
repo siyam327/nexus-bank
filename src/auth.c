@@ -1,6 +1,7 @@
 /*
  auth.c (login, logout, pin management)
- Owner: Arpita
+ Owner: Arpita Malakar
+ Id:2026-2-60-553
 */
 #include <stdio.h>
 #include <string.h>
