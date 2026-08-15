@@ -6,10 +6,29 @@
 #include <string.h>
 #include "../include/types.h"
 #include "../include/system.h"
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <sys/ioctl.h>
+    #include <unistd.h>
+#endif
 
-// simple centering, just assumes a 60 character line width and pads
-// with spaces, no terminal size detection needed
-#define SCREEN_WIDTH 80
+// centers against the terminal's actual current width so the menu
+// looks right no matter how wide/narrow the window is. falls back
+// to 80 columns if the width can't be detected (e.g. piped output)
+static int get_screen_width() {
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+        return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    return 80;
+#else
+    struct winsize w;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 && w.ws_col > 0)
+        return w.ws_col;
+    return 80;
+#endif
+}
 
 static const char *account_type_str(AccountType t) { return t == SAVINGS ? "Savings" : "Checking"; }
 
@@ -37,7 +56,7 @@ static const char *loan_status_str(LoanStatus s) {
 
 int print_centered(const char *text) {
     int len = strlen(text);
-    int pad = (SCREEN_WIDTH - len) / 2;
+    int pad = (get_screen_width() - len) / 2;
     if (pad < 0) pad = 0;
     printf("%*s%s\n", pad, "", text);
     return 0;
