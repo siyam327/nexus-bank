@@ -1,13 +1,13 @@
 # Nexus Bank
 
-CSE103 Structured Programming group project. A console bank management system written in C, accounts, deposits/withdrawals, transfers, loans, interest, and an admin panel. No database, just plain text files.
+CSE103 Structured Programming group project. A console bank management system written in C - accounts, deposits/withdrawals, transfers, loans, interest, and an admin panel. No database, just plain text files.
 
 5 person team project.
 
 
 ## Features
 
-- Open a Savings or Checking account, log in with a 6-digit PIN
+- Open a Savings or Checking account, log in with a 6 digit PIN
 - Deposit, withdraw, transfer between accounts
 - Two customer tiers (Normal / Premium) with different balance caps, daily withdrawal limits, and per-transfer limits
 - Transaction history (last 30 shown, full history exportable to a text file)
