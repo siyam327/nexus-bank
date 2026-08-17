@@ -14,47 +14,32 @@ ID:2026-2-60-026 */
 
 double calc_monthly_payment(double principal, double annual_rate, int months);
 
-double calculate_loan_monthly_interest(double remaining_balance,
-                                       double annual_rate);
+double calculate_loan_monthly_interest(double remaining_balance,double annual_rate);
 
-double calculate_principal_payment(double monthly_payment,
-                                   double interest);
+double calculate_principal_payment(double monthly_payment,double interest);
 
-double calculate_remaining_balance(double remaining_balance,
-                                   double principal_payment);
+double calculate_remaining_balance(double remaining_balance,double principal_payment);
 
-double calculate_total_payment(double monthly_payment,
-                               int months);
+double calculate_total_payment(double monthly_payment,int months);
 
-double calculate_total_interest(double monthly_payment,
-                                int months,
-                                double principal);
+double calculate_total_interest(double monthly_payment,int months,double principal);
 
-int validate_loan(double principal,
-                  double annual_rate,
-                  int months);
-
+int validate_loan(double principal,double annual_rate,int months);
 
 double get_interest_rate(int account_type);
 
-double calc_interest(double balance,
-                     double annual_rate,
-                     int days);
+double calc_interest(double balance,double annual_rate,int days);
 
-double calculate_account_monthly_interest(double balance,
-                                          double annual_rate);
+double calculate_account_monthly_interest(double balance,double annual_rate);
 
-double calculate_interest_amount(double balance,
-                                 double annual_rate);
+double calculate_interest_amount(double balance,double annual_rate);
 
-double calculate_new_balance(double balance,
-                             double interest);
+double calculate_new_balance(double balance,double interest);
 
-double calculate_yearly_interest(double balance,
-                                 double annual_rate);
+double calculate_yearly_interest(double balance,double annual_rate);
 
 
-/* ================= FILE HANDLING FUNCTIONS ================= */
+//FILE HANDLING FUNCTIONS//
 
 void save_loan_data(double principal,
                     double annual_rate,
@@ -133,11 +118,9 @@ void save_interest_data(double savings_balance,
 }
 
 
-/* ================= LOAN FUNCTIONS ================= */
+//LOAN FUNCTIONS//
 
-double calc_monthly_payment(double principal,
-                            double annual_rate,
-                            int months)
+double calc_monthly_payment(double principal,double annual_rate,int months)
 {
     double monthly_rate;
     double power;
@@ -166,8 +149,7 @@ double calc_monthly_payment(double principal,
 }
 
 
-double calculate_loan_monthly_interest(double remaining_balance,
-                                       double annual_rate)
+double calculate_loan_monthly_interest(double remaining_balance, double annual_rate)
 {
     double monthly_rate;
 
@@ -182,8 +164,7 @@ double calculate_loan_monthly_interest(double remaining_balance,
 }
 
 
-double calculate_principal_payment(double monthly_payment,
-                                   double interest)
+double calculate_principal_payment(double monthly_payment,double interest)
 {
     double principal_payment;
 
@@ -198,8 +179,7 @@ double calculate_principal_payment(double monthly_payment,
 }
 
 
-double calculate_remaining_balance(double remaining_balance,
-                                   double principal_payment)
+double calculate_remaining_balance(double remaining_balance,double principal_payment)
 {
     double new_balance;
 
@@ -212,14 +192,11 @@ double calculate_remaining_balance(double remaining_balance,
 
     return new_balance;
 }
-double calculate_total_payment(double monthly_payment,
-                               int months)
+double calculate_total_payment(double monthly_payment,int months)
 {
     return monthly_payment * months;
 }
-double calculate_total_interest(double monthly_payment,
-                                int months,
-                                double principal)
+double calculate_total_interest(double monthly_payment,int months,double principal)
 {
     double total_payment;
 
@@ -228,9 +205,7 @@ double calculate_total_interest(double monthly_payment,
     return total_payment - principal;
 }
 
-int validate_loan(double principal,
-                  double annual_rate,
-                  int months)
+int validate_loan(double principal,double annual_rate,int months)
 {
     if (principal <= 0.0)
     {
@@ -246,7 +221,7 @@ int validate_loan(double principal,
     }
     return 1;
 }
-/* INTEREST FUNCTIONS */
+//INTEREST FUNCTIONS//
 
 double get_interest_rate(int account_type)
 {
@@ -261,43 +236,34 @@ double get_interest_rate(int account_type)
     }
     return 0.0;
 }
-double calc_interest(double balance,
-                     double annual_rate,
-                     int days)
+double calc_interest(double balance,double annual_rate,int days)
 {
     double daily_rate;
     daily_rate = annual_rate / 365.0;
     return balance * daily_rate * days;
 }
-double calculate_account_monthly_interest(double balance,
-                                          double annual_rate)
+double calculate_account_monthly_interest(double balance, double annual_rate)
 {
     double monthly_rate;
     monthly_rate = annual_rate / 12.0;
     return balance * monthly_rate;
 }
-double calculate_interest_amount(double balance,
-                                 double annual_rate)
+double calculate_interest_amount(double balance,double annual_rate)
 {
-    return calculate_account_monthly_interest(
-        balance,
-        annual_rate
-    );
+    return calculate_account_monthly_interest(balance,annual_rate);
 }
-double calculate_new_balance(double balance,
-                             double interest)
+double calculate_new_balance(double balance,double interest)
 {
     return balance + interest;
 }
-double calculate_yearly_interest(double balance,
-                                 double annual_rate)
+double calculate_yearly_interest(double balance,double annual_rate)
 {
     return balance * annual_rate;
 }
 
 int main()
 {
-    /*  LOAN MODULE */
+    //LOAN MODULE//
 
     double principal = 10000.0;
     double annual_rate = 0.08;
@@ -363,21 +329,14 @@ int main()
     {
         payment_month++;
         monthly_interest =
-            calculate_loan_monthly_interest(
-                remaining_balance,
-                annual_rate);
-        principal_payment =
-            calculate_principal_payment(
-                monthly_payment,
-                monthly_interest);
+            calculate_loan_monthly_interest(remaining_balance,annual_rate);
+        principal_payment =calculate_principal_payment(monthly_payment,monthly_interest);
         if (principal_payment > remaining_balance)
         {
             principal_payment = remaining_balance;
         }
         remaining_balance =
-            calculate_remaining_balance(
-                remaining_balance,
-                principal_payment);
+            calculate_remaining_balance(remaining_balance,principal_payment);
         printf("%-8d %-12.2f %-12.2f %-12.2f\n",
                payment_month,
                monthly_payment,
@@ -396,7 +355,7 @@ int main()
         printf("CLOSED\n");
     else
         printf("DELINQUENT\n");
-    /* SAVE LOAN DATA */
+   //SAVE LOAN DATA//
     save_loan_data(
         principal,
         annual_rate,
@@ -407,33 +366,18 @@ int main()
         remaining_balance,
         status
     );
-    /* INTEREST MODULE  */
+    //INTEREST MODULE //
     double savings_balance = 10000.0;
     double checking_balance = 10000.0;
     double savings_rate = get_interest_rate(0);
     double checking_rate = get_interest_rate(1);
     double savings_interest =
-        calculate_interest_amount(
-            savings_balance,
-            savings_rate);
-    double checking_interest =
-        calculate_interest_amount(
-            checking_balance,
-            checking_rate);
-    double savings_new =
-        calculate_new_balance(
-            savings_balance,
-            savings_interest);
-    double checking_new =
-        calculate_new_balance(
-            checking_balance,
-            checking_interest);
-    double savings_yearly =
-        calculate_yearly_interest(
-            savings_balance,
-            savings_rate);
-    double checking_yearly =
-        calculate_yearly_interest(
+        calculate_interest_amount(savings_balance,savings_rate);
+    double checking_interest =calculate_interest_amount(checking_balance,checking_rate);
+    double savings_new =calculate_new_balance(savings_balance,savings_interest);
+    double checking_new =calculate_new_balance( checking_balance,checking_interest);
+    double savings_yearly =calculate_yearly_interest( savings_balance,savings_rate);
+    double checking_yearly =calculate_yearly_interest(
             checking_balance,
             checking_rate);
     printf("\n============================================\n");
@@ -452,7 +396,7 @@ int main()
     printf("New Balance      : %.2f\n", checking_new);
     printf("Yearly Interest  : %.2f\n", checking_yearly);
 
-    /* SAVE INTEREST DATA  */
+    // SAVE INTEREST DATA //
     save_interest_data(
         savings_balance,
         savings_interest,
