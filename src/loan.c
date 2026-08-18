@@ -41,14 +41,14 @@ double calculate_yearly_interest(double balance,double annual_rate);
 
 //FILE HANDLING FUNCTIONS//
 
-void save_loan_data(double principal,
-                    double annual_rate,
-                    int months,
-                    double monthly_payment,
-                    double total_payment,
-                    double total_interest,
-                    double remaining_balance,
-                    int status)
+int save_loan_data(double principal,
+                   double annual_rate,
+                   int months,
+                   double monthly_payment,
+                   double total_payment,
+                   double total_interest,
+                   double remaining_balance,
+                   int status)
 {
     FILE *file;
 
@@ -57,7 +57,7 @@ void save_loan_data(double principal,
     if (file == NULL)
     {
         printf("Error: Could not open loan file.\n");
-        return;
+        return 0;
     }
 
     fprintf(file, "Loan Amount: %.2f\n", principal);
@@ -78,17 +78,19 @@ void save_loan_data(double principal,
     fprintf(file, "--------------------------------------------\n");
 
     fclose(file);
+
+    return 1;
 }
 
 
-void save_interest_data(double savings_balance,
-                        double savings_interest,
-                        double savings_new,
-                        double savings_yearly,
-                        double checking_balance,
-                        double checking_interest,
-                        double checking_new,
-                        double checking_yearly)
+int save_interest_data(double savings_balance,
+                       double savings_interest,
+                       double savings_new,
+                       double savings_yearly,
+                       double checking_balance,
+                       double checking_interest,
+                       double checking_new,
+                       double checking_yearly)
 {
     FILE *file;
 
@@ -97,7 +99,7 @@ void save_interest_data(double savings_balance,
     if (file == NULL)
     {
         printf("Error: Could not open interest file.\n");
-        return;
+        return 0;
     }
 
     fprintf(file, "Savings Account\n");
@@ -115,6 +117,8 @@ void save_interest_data(double savings_balance,
     fprintf(file, "============================================\n");
 
     fclose(file);
+
+    return 1;
 }
 
 
