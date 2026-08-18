@@ -1,7 +1,7 @@
 /* 
- main.c (the top level menu loop tying every module together)
- Owner: Siyam
- */
+  main.c (the top level menu loop tying every module together)
+  Owner: Siyam
+*/
 #include <stdio.h>
 #include <string.h>
 #include "../include/types.h"
@@ -12,6 +12,7 @@
 static int user_menu(Session *s) {
     int choice;
     char line[160];
+
     while (s->logged_in) {
         clear_screen();
         print_logo();
@@ -20,111 +21,128 @@ static int user_menu(Session *s) {
         print_centered(line);
         printf("\n");
         print_separator();
+
         print_centered("ACCOUNT");
         print_menu_item(1, "View my account");
         print_menu_item(2, "Change PIN");
         print_menu_item(3, "Close account");
+
         printf("\n");
         print_centered("TRANSACTIONS");
         print_menu_item(4, "Deposit");
         print_menu_item(5, "Withdraw");
         print_menu_item(6, "Transfer");
         print_menu_item(7, "Transaction history");
+
         printf("\n");
         print_centered("LOANS & INTEREST");
         print_menu_item(8, "Apply for loan");
         print_menu_item(9, "Make loan payment");
-        print_menu_item(10, "View my loans");
-        print_menu_item(11, "Apply interest (savings)");
-        printf("\n");
-        print_centered("OTHER");
-        print_menu_item(12, "Export account statement");
+        print_menu_item(10, "View loan status");
+
         printf("\n");
         print_menu_item(0, "Logout");
         print_separator();
 
-        choice = get_int("\nYour choice: ", 0, 12);
-        clear_screen();
+        choice = get_int("Select option: ", 0, 10);
+
         switch (choice) {
-            case 1: view_my_account(s); break;
-            case 2: change_pin(s); break;
-            case 3: delete_my_account(s); break;
-            case 4: deposit(s); break;
-            case 5: withdraw(s); break;
-            case 6: transfer(s); break;
-            case 7: view_history(s); break;
-            case 8: apply_for_loan(s); break;
-            case 9: make_loan_payment(s); break;
-            case 10: view_my_loans(s); break;
-            case 11: apply_interest(s); break;
-            case 12: export_statement(s); break;
-            case 0: logout_session(s); break;
-        }
-        // balance might have changed after whatever action ran, refresh it
-        if (s->logged_in) {
-            Account fresh;
-            if (find_account(s->account.id, &fresh)) s->account.balance = fresh.balance;
+            case 1:  user_view_account(s); break;
+            case 2:  user_change_pin(s); break;
+            case 3:  user_close_account(s); break;
+            case 4:  user_deposit(s); break;
+            case 5:  user_withdraw(s); break;
+            case 6:  user_transfer(s); break;
+            case 7:  user_view_transactions(s); break;
+            case 8:  user_apply_loan(s); break;
+            case 9:  user_pay_loan(s); break;
+            case 10: user_view_loans(s); break;
+            case 0:
+                s->logged_in = 0;
+                print_info("Logged out successfully.");
+                press_enter();
+                break;
+            default:
+                break;
         }
     }
     return 0;
 }
 
-static int admin_menu(Session *s) {
+static int admin_menu() {
     int choice;
-    while (s->logged_in && s->is_admin) {
-        clear_screen();
-        print_logo();
-        print_centered("*** ADMIN PANEL ***");
-        printf("\n");
-        admin_dashboard();
-        print_separator();
-        print_menu_item(1, "List all accounts");
-        print_menu_item(2, "View account details");
-        print_menu_item(3, "Reset account PIN");
-        print_menu_item(4, "Activate / deactivate account");
-        print_menu_item(5, "View all loans");
-        print_menu_item(0, "Logout");
-        print_separator();
-
-        choice = get_int("\nYour choice: ", 0, 5);
-        clear_screen();
-        switch (choice) {
-            case 1: admin_list_accounts(); break;
-            case 2: admin_view_account(); break;
-            case 3: admin_reset_pin(); break;
-            case 4: admin_toggle_account(); break;
-            case 5: admin_view_all_loans(); break;
-            case 0: logout_session(s); break;
-        }
-    }
-    return 0;
-}
-
-int main() {
-    Session session;
-    int choice;
-    make_data_dir();
-    memset(&session, 0, sizeof(session));
 
     while (1) {
         clear_screen();
         print_logo();
+        print_header("ADMINISTRATOR PANEL");
+
+        print_menu_item(1, "System Dashboard");
+        print_menu_item(2, "List All Accounts");
+        print_menu_item(3, "View Account Details");
+        print_menu_item(4, "Reset Account PIN");
+        print_menu_item(5, "Toggle Account Status");
+        print_menu_item(6, "View All Loans");
+        print_menu_item(0, "Exit Admin Panel");
         print_separator();
-        print_menu_item(1, "User Login");
-        print_menu_item(2, "Open New Account");
+
+        choice = get_int("Select option: ", 0, 6);
+
+        switch (choice) {
+            case 1: admin_dashboard(); break;
+            case 2: admin_list_accounts(); break;
+            case 3: admin_view_account(); break;
+            case 4: admin_reset_pin(); break;
+            case 5: admin_toggle_account(); break;
+            case 6: admin_view_all_loans(); break;
+            case 0: return 0;
+            default: break;
+        }
+    }
+}
+
+int main() {
+    Session session;
+    memset(&session, 0, sizeof(Session));
+
+    make_data_dir();
+
+    while (1) {
+        clear_screen();
+        print_logo();
+        print_header("MAIN MENU");
+
+        print_menu_item(1, "Customer Login");
+        print_menu_item(2, "Create New Account");
         print_menu_item(3, "Admin Login");
         print_menu_item(0, "Exit");
         print_separator();
 
-        choice = get_int("\nYour choice: ", 0, 3);
+        int choice = get_int("Select option: ", 0, 3);
+
         switch (choice) {
-            case 1: clear_screen(); if (login_user(&session)) user_menu(&session); break;
-            case 2: clear_screen(); create_account(); break;
-            case 3: clear_screen(); if (login_admin(&session)) admin_menu(&session); break;
+            case 1:
+                if (auth_login(&session)) {
+                    user_menu(&session);
+                }
+                break;
+            case 2:
+                auth_register();
+                break;
+            case 3:
+                if (auth_admin_login()) {
+                    admin_menu();
+                }
+                break;
             case 0:
                 clear_screen();
-                printf("\nThank you for using %s. Goodbye!\n\n", BANK_NAME);
+                print_centered("Thank you for using Nexus Bank.");
+                printf("\n");
                 return 0;
+            default:
+                break;
         }
     }
+
+    return 0;
 }
