@@ -1,11 +1,12 @@
 /*
- display.c (all print/menu formatting)
- Owner: Siyam
- */
+  display.c (all print/menu formatting)
+  Owner: Siyam
+*/
 #include <stdio.h>
 #include <string.h>
 #include "../include/types.h"
 #include "../include/system.h"
+
 #ifdef _WIN32
     #include <windows.h>
 #else
@@ -13,24 +14,26 @@
     #include <unistd.h>
 #endif
 
-// centers against the terminal's actual current width so the menu
-// looks right no matter how wide/narrow the window is. falls back
-// to 80 columns if the width can't be detected (e.g. piped output)
+// Centers against terminal's current width (falls back to 80 if undetected)
 static int get_screen_width() {
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
-    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
         return csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    }
     return 80;
 #else
     struct winsize w;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 && w.ws_col > 0)
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 && w.ws_col > 0) {
         return w.ws_col;
+    }
     return 80;
 #endif
 }
 
-static const char *account_type_str(AccountType t) { return t == SAVINGS ? "Savings" : "Checking"; }
+static const char *account_type_str(AccountType t) {
+    return (t == SAVINGS) ? "Savings" : "Checking";
+}
 
 static const char *txn_type_str(TxnType t) {
     switch (t) {
@@ -58,6 +61,7 @@ int print_centered(const char *text) {
     int len = strlen(text);
     int pad = (get_screen_width() - len) / 2;
     if (pad < 0) pad = 0;
+
     printf("%*s%s\n", pad, "", text);
     return 0;
 }
@@ -98,7 +102,7 @@ int print_account_card(const Account *acc) {
     printf("  Account #%d\n", acc->id);
     printf("  Holder       : %s\n", acc->name);
     printf("  Type         : %s\n", account_type_str(acc->type));
-    printf("  Tier         : %s\n", acc->tier == PREMIUM ? "Premium" : "Normal");
+    printf("  Tier         : %s\n", (acc->tier == PREMIUM) ? "Premium" : "Normal");
     printf("  Balance      : $%.2f\n", acc->balance);
     printf("  Interest Rate: %.1f%% per year\n", acc->interest_rate * 100.0);
     printf("  Status       : %s\n", acc->is_active ? "Active" : "Inactive");
@@ -190,7 +194,7 @@ int print_menu_item(int num, const char *label) {
 }
 
 int print_admin_stats(int total_accounts, int active, double total_balance,
-                       int total_loans, double loan_balance) {
+                      int total_loans, double loan_balance) {
     print_header("SYSTEM OVERVIEW");
     printf("  Total Accounts  : %d  (%d active, %d inactive)\n",
            total_accounts, active, total_accounts - active);
