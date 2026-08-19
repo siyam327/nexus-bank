@@ -33,9 +33,9 @@ int delete_my_account(Session *s);
 int update_balance(int account_id,double new_balance);
 
 //customer tier limits
-double max_balance_for(CustomerTypetier);
-double daily_withdraw_limit_for(CustomerTypetier);
-double trsnsfer_limit_for(CustomerTypetier);
+double max_balance_for(CustomerType tier);
+double daily_withdraw_limit_for(CustomerType tier);
+double transfer_limit_for(CustomerType tier);
 
 #endif
 
