@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "account.h"
+#include "system.h"
 
 int create_account()
 {
@@ -33,7 +34,6 @@ int create_account()
     }
     acc.id=maxID+1;
      printf("Enter account holders name:");
-    getchar();
     fgets(acc.name,MAX_NAME_LEN,stdin);
     acc.name[strcspn(acc.name, "\n")] = '\0';
 
@@ -131,6 +131,11 @@ int create_account()
        }
 
        acc.is_active=1;
+       acc.failed_attempts=0;
+       acc.withdrawn_today=0.0;
+       get_current_datetime(acc.created_at);
+       strncpy(acc.last_withdraw_date, acc.created_at, MAX_DATE_LEN - 1);
+       acc.last_withdraw_date[MAX_DATE_LEN - 1] = '\0';
 
        if(count>=MAX_ACCOUNTS)
        {
