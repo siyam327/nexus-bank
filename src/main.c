@@ -47,16 +47,16 @@ static int user_menu(Session *s) {
         choice = get_int("Select option: ", 0, 10);
 
         switch (choice) {
-            case 1:  user_view_account(s); break;
-            case 2:  user_change_pin(s); break;
-            case 3:  user_close_account(s); break;
-            case 4:  user_deposit(s); break;
-            case 5:  user_withdraw(s); break;
-            case 6:  user_transfer(s); break;
-            case 7:  user_view_transactions(s); break;
-            case 8:  user_apply_loan(s); break;
-            case 9:  user_pay_loan(s); break;
-            case 10: user_view_loans(s); break;
+            case 1:  view_my_account(s); break;
+            case 2:  change_pin(s); break;
+            case 3:  delete_my_account(s); break;
+            case 4:  deposit(s); break;
+            case 5:  withdraw(s); break;
+            case 6:  transfer(s); break;
+            case 7:  view_history(s); break;
+            case 8:  apply_for_loan(s); break;
+            case 9:  make_loan_payment(s); break;
+            case 10: view_my_loans(s); break;
             case 0:
                 s->logged_in = 0;
                 print_info("Logged out successfully.");
@@ -122,15 +122,15 @@ int main() {
 
         switch (choice) {
             case 1:
-                if (auth_login(&session)) {
+                if (login_user(&session)) {
                     user_menu(&session);
                 }
                 break;
             case 2:
-                auth_register();
+                create_account();
                 break;
             case 3:
-                if (auth_admin_login()) {
+                if (login_admin(&session)) {
                     admin_menu();
                 }
                 break;
